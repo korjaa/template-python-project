@@ -1,45 +1,25 @@
-"""This module defines CLI interface
-"""
+"""Command-line interface module."""
 import sys
 import logging
 import argparse
 
 
 def parse_args(args):
-    """Parses given arguments.
-    This function is separated from main for testing purposes.
-    https://stackoverflow.com/questions/18160078/how-do-you-write-tests-for-the-argparse-portion-of-a-python-module
-    Arguments:
-        args {list} -- List of arguments.
-    Returns:
-        [type] -- Parsed arguments.
-    """
-    parser = argparse.ArgumentParser(description='Process some integers.')
-
+    parser = argparse.ArgumentParser()
     parser.add_argument(
         '--verbose', action="store_true",
-        help="Enable verbose logging")
-
-    parser.add_argument(
-        '--multi', type=str, choices=["op1", "op2"], default="op1",
-        help='Example choices selection')
+        help="Enable verbose logging.")
 
     return parser.parse_args(args)
 
 
 def main(args=None):
-    """Executes CLI interface.
-    """
+    cli_args = args if isinstance(args, list) else sys.argv[1:]
+    pargs = parse_args(cli_args)
 
-    # Parse arguments
-    # ---------------
-    if isinstance(args, list):
-        # parse_args being is being tested.
-        pargs = parse_args(args)
-    else:
-        pargs = parse_args(sys.argv[1:])
+    level = logging.DEBUG if pargs.verbose else logging.INFO
+    logging.basicConfig(level=level)
 
-    if pargs.verbose:
-        logging.basicConfig(level=logging.DEBUG)
-    else:
-        logging.basicConfig(level=logging.INFO)
+
+if __name__ == "__main__":
+    main()
